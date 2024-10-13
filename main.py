@@ -7,7 +7,8 @@ import json
 if 'params.json' not in os.listdir():
     db_user_data = {
         'user': str(input('Insira o username: ')),
-        'password': str(input('Insira a senha: '))
+        'password': str(input('Insira a senha: ')),
+        'database_already_exists': False
     }
 
     with open('params.json', 'w') as params_file:
