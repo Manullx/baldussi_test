@@ -1,39 +1,35 @@
+
 import mysql.connector
 from mysql.connector import connect
 import json
 
-#Define os parâmetros para acessar o banco de dados local
-with open('params.json', 'r') as params_file:
-    db_user_data = json.load(params_file)
-    params_file.close()
 
-
-def create_database():
+def create_database(system_params):
 
     def first_try() -> None:
 
         try:
             # Primeira conexão com o MySQL
-            db_conn = connect(
-                user=db_user_data['user'],
-                password=db_user_data['password'],
+            conn = connect(
+                user=system_params['user'],
+                password=system_params['password'],
                 host='localhost'
             )
-            db_cursor = db_conn.cursor()
+            cursor = conn.cursor()
 
             # Cria o database mysql caso ele não exista
-            db_cursor.execute(
+            cursor.execute(
                 """CREATE DATABASE IF NOT EXISTS baldussi_db"""
             )
 
             #Encerra a conexão com o banco de dados
-            db_cursor.close()
-            db_conn.close()
+            cursor.close()
+            conn.close()
 
             # Reescreve o arquivo de parâmetros setados
             with open('params.json', 'w') as params_file:
-                db_user_data['database_already_exists'] = True
-                json.dump(db_user_data, params_file)
+                system_params['database_already_exists'] = True
+                json.dump(system_params, params_file)
                 params_file.close()
 
             print('Database criado com sucesso!')
@@ -89,19 +85,21 @@ def create_database():
 
         # Reescreve o arquivo de parâmetros setados
         with open('params.json', 'w') as params_file:
-            db_user_data['tables_already_exists'] = True
-            json.dump(db_user_data, params_file)
+            system_params['tables_already_exists'] = True
+            json.dump(system_params, params_file)
             params_file.close()
 
-    if not db_user_data['database_already_exists']:
+        print("Tabelas criadas com sucesos!")
+
+    if not system_params['database_already_exists']:
         first_try()
 
-    if not db_user_data['tables_already_exists']:
+    if not system_params['tables_already_exists']:
         try:
             # realiza a conexão novamente com o banco de dados, mas com o database incluído na conexão
             db_conn = connect(
-                user=db_user_data['user'],
-                password=db_user_data['password'],
+                user=system_params['user'],
+                password=system_params['password'],
                 host='localhost',
                 database='baldussi_db'
             )
