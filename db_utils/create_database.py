@@ -41,10 +41,12 @@ def create_database(system_params: dict):
 
         #Criando tabela com informações do usuário
         cursor.execute(
-            """CREATE TABLE IF NOT EXISTS users_info (
+            """CREATE TABLE IF NOT EXISTS users (
             user_id INT NOT NULL AUTO_INCREMENT,
             user_first_name VARCHAR(255) NOT NULL,
             user_last_name VARCHAR(255) NOT NULL,
+            user_age INT NOT NULL,
+            user_birth_date DATETIME(3) NOT NULL, 
             user_gender VARCHAR(255) NOT NULL,
             user_email VARCHAR(255) NOT NULL,
             user_phone VARCHAR(255) NOT NULL,
@@ -56,7 +58,7 @@ def create_database(system_params: dict):
         #Criando tabela com imformações de login do usuário
         cursor.execute(
             """CREATE TABLE IF NOT EXISTS users_login (
-            user_id INT,
+            user_login_id INT,
             user_uuid VARCHAR(255) NOT NULL,
             user_username VARCHAR(255) NOT NULL,
             user_password VARCHAR(255) NOT NULL,
@@ -64,14 +66,14 @@ def create_database(system_params: dict):
             user_md5 VARCHAR(255) NOT NULL,
             user_sha1 VARCHAR(255) NOT NULL,
             user_sha256 VARCHAR(255) NOT NULL,
-            CONSTRAINT user_login_id FOREIGN KEY (user_id) REFERENCES users_info(user_id)
+            CONSTRAINT user_login_id FOREIGN KEY (user_login_id) REFERENCES users(user_id)
             )"""
         )
 
         #Criando tabelas com informações de endereço do usuário
         cursor.execute(
             """CREATE TABLE IF NOT EXISTS users_addresses (
-            user_id INT,
+            user_address_id INT,
             user_street_name VARCHAR(255) NOT NULL,
             user_street_number INT NOT NULL,
             user_city VARCHAR(255) NOT NULL,
@@ -80,7 +82,7 @@ def create_database(system_params: dict):
             user_postcode VARCHAR(255) NOT NULL,
             user_latitude VARCHAR(255) NOT NULL,
             user_longitude VARCHAR(255) NOT NULL,
-            CONSTRAINT user_location_id FOREIGN KEY (user_id) REFERENCES users_info(user_id)
+            CONSTRAINT user_address_id FOREIGN KEY (user_address_id) REFERENCES users(user_id)
             )"""
         )
 
