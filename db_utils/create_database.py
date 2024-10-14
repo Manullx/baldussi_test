@@ -4,7 +4,7 @@ from mysql.connector import connect
 import json
 
 
-def create_database(system_params):
+def create_database(system_params: dict):
 
     def first_try() -> None:
 
@@ -70,15 +70,16 @@ def create_database(system_params):
 
         #Criando tabelas com informações de endereço do usuário
         cursor.execute(
-            """CREATE TABLE IF NOT EXISTS users_location (
+            """CREATE TABLE IF NOT EXISTS users_addresses (
             user_id INT,
             user_street_name VARCHAR(255) NOT NULL,
             user_street_number INT NOT NULL,
             user_city VARCHAR(255) NOT NULL,
             user_state VARCHAR(255) NOT NULL,
             user_country VARCHAR(255) NOT NULL,
-            user_latituded VARCHAR(255) NOT NULL,
-            user_longituded VARCHAR(255) NOT NULL,
+            user_postcode VARCHAR(255) NOT NULL,
+            user_latitude VARCHAR(255) NOT NULL,
+            user_longitude VARCHAR(255) NOT NULL,
             CONSTRAINT user_location_id FOREIGN KEY (user_id) REFERENCES users_info(user_id)
             )"""
         )
@@ -94,26 +95,26 @@ def create_database(system_params):
     if not system_params['database_already_exists']:
         first_try()
 
-    if not system_params['tables_already_exists']:
-        try:
-            # realiza a conexão novamente com o banco de dados, mas com o database incluído na conexão
-            db_conn = connect(
-                user=system_params['user'],
-                password=system_params['password'],
-                host='localhost',
-                database='baldussi_db'
-            )
+    try:
+        # realiza a conexão novamente com o banco de dados, mas com o database incluído na conexão
+        db_conn = connect(
+            user=system_params['user'],
+            password=system_params['password'],
+            host='localhost',
+            database='baldussi_db'
+        )
 
-            db_cursor = db_conn.cursor()
+        db_cursor = db_conn.cursor()
 
+        if not system_params['tables_already_exists']:
             create_tables(
                 cursor=db_cursor
             )
 
-            return db_conn, db_cursor
+        return db_conn, db_cursor
 
-        except mysql.connector.Error as err:
-            raise Exception(f'Erro encontrado durante tentativa de conexão com o database: {err}')
+    except mysql.connector.Error as err:
+        raise Exception(f'Erro encontrado durante tentativa de conexão com o database: {err}')
 
 
 
