@@ -21,13 +21,15 @@ def insert_into_db(system_params: dict, db_conn, db_cursor):
 
         #Insere o usuário na tabela de informações de usuário
         db_cursor.execute(
-            """INSERT INTO users_info 
-            (user_first_name, user_last_name, user_gender, user_email, user_phone, user_cell)
-            VALUES (%s, %s, %s, %s, %s, %s)
+            """INSERT INTO users
+            (user_first_name, user_last_name, user_age, user_birth_date, user_gender, user_email, user_phone, user_cell)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
             """,
             (
                 user_data['name']['first'],
                 user_data['name']['last'],
+                user_data['registered']['age'],
+                user_data['registered']['date'].replace('T', ' ').replace('Z', ''),
                 user_data['gender'],
                 user_data['email'],
                 user_data['phone'],
@@ -41,7 +43,7 @@ def insert_into_db(system_params: dict, db_conn, db_cursor):
         #Insere informações de login do usuário
         db_cursor.execute(
             """INSERT INTO users_login
-            (user_id, user_uuid, user_username, user_password, user_salt, user_md5, user_sha1, user_sha256)
+            (user_login_id, user_uuid, user_username, user_password, user_salt, user_md5, user_sha1, user_sha256)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
             """,
             (
@@ -59,7 +61,7 @@ def insert_into_db(system_params: dict, db_conn, db_cursor):
         #Insere informações de endereço do usuário
         db_cursor.execute(
             """INSERT INTO users_addresses
-            (user_id, user_street_name, user_street_number, user_city, user_state,
+            (user_address_id, user_street_name, user_street_number, user_city, user_state,
             user_country, user_postcode, user_latitude, user_longitude)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
             """,

@@ -34,4 +34,7 @@ insert_into_db(
     db_cursor=cursor
 )
 
+os.system('python baldussi_api/manage.py runserver')
+
+
 
